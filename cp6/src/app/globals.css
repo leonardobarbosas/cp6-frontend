@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  next-route-announcer,
+  nextjs-portal {
+    display: none;
+  }
+
+  body {
+    @apply flex flex-col justify-between h-screen bg-background font-medium;
+  }
+
+  .home-container {
+    @apply bg-center bg-no-repeat bg-fixed h-80vh flex flex-col justify-center gap-8;
+    background-image: url("../img/planet.png");
+    background-position: 100%;
+
+    h1 {
+      @apply text-white text-7xl w-3/6 font-semibold p-8;
+    }
+
+  }
+
+  .cabecalho {
+    @apply text-white flex h-10vh;
+
+    nav {
+      @apply w-full h-full;
+
+      ul {
+        @apply flex w-full h-full justify-around items-center;
+      }
+
+      & a {
+        @apply text-xl;
+        @apply hover:text-2xl hover:t-color;
+        @apply transition-all duration-200 ease-in-out;
+      }
+    }
+  }
+
+  .rodape {
+    @apply text-white flex h-10vh justify-center items-center;
+  }
+
+  .h-10vh {
+    height: 10vh;
+  }
+  .h-80vh {
+    height: 80vh;
+  }
+  .t-color {
+    color: #2f2f8a;
+  }
+  .bg-back {
+    background-color: #2f2f8a;
+  }
+}
