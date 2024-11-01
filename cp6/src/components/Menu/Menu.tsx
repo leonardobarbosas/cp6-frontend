@@ -20,7 +20,7 @@ export default function Menu() {
           <Link href="/gs">Global Solution</Link>
         </li>
         <li>
-          <Link href="/cps">Checkpoints</Link>
+          <Link href="/checkpoints">Checkpoints</Link>
         </li>
       </ul>
     </nav>
