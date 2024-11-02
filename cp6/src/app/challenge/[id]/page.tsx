@@ -62,7 +62,7 @@ export default function Desafio({ params }: { params: { id: number } }) {
         navigate.push("/challenge");
       }
     } catch (error) {
-      console.error("Ocorreu um erro na atualização do produto.", error);
+      console.error("Ocorreu um erro na atualização do challenge.", error);
     }
   };
 
