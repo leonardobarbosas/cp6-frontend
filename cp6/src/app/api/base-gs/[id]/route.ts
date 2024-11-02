@@ -1,20 +1,19 @@
 import { TipoGs } from "@/types";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { client } from "@/lib/appwrite_client";
 import { Databases } from "appwrite";
 
 const database = new Databases(client);
 
-export async function GET(request: NextRequest) {
-  const id = request.nextUrl.searchParams.get('id');
-  if (!id) {
-    return NextResponse.json({ message: "ID não fornecido" }, { status: 400 });
-  }
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const response = await database.getDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GLOBAL_SOLUTION_ID as string,
-      id
+      params.id
     );
     return NextResponse.json(response);
   } catch (error) {
@@ -26,11 +25,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
-  const id = request.nextUrl.searchParams.get('id');
-  if (!id) {
-    return NextResponse.json({ message: "ID não fornecido" }, { status: 400 });
-  }
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const { nome, descricao, nota, link } =
       await request.json();
@@ -44,7 +42,7 @@ export async function PUT(request: NextRequest) {
     await database.updateDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GLOBAL_SOLUTION_ID as string,
-      id,
+      params.id,
       gs
     );
 
@@ -58,16 +56,15 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
-  const id = request.nextUrl.searchParams.get('id');
-  if (!id) {
-    return NextResponse.json({ message: "ID não fornecido" }, { status: 400 });
-  }
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     await database.deleteDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GLOBAL_SOLUTION_ID as string,
-      id
+      params.id
     );
 
     return NextResponse.json({ status: 204 });
