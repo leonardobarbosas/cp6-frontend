@@ -1,19 +1,21 @@
-import { TipoChallenge } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
+import { TipoChallenge } from "@/types";
 import { client } from "@/lib/appwrite_client";
 import { Databases } from "appwrite";
 
 const database = new Databases(client);
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+interface Context {
+  params: { id: string };
+}
+
+export async function GET(request: NextRequest, context: Context) {
+  const { id } = context.params;
   try {
     const response = await database.getDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      params.id
+      id
     );
     return NextResponse.json(response);
   } catch (error) {
@@ -25,10 +27,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: Context) {
+  const { id } = context.params;
   try {
     const { nome, descricao, nota } = await request.json();
     const challenge = {
@@ -40,7 +40,7 @@ export async function PUT(
     await database.updateDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      params.id,
+      id,
       challenge
     );
 
@@ -54,15 +54,13 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: Context) {
+  const { id } = context.params;
   try {
     await database.deleteDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      params.id
+      id
     );
 
     return NextResponse.json({ status: 204 });
