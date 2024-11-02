@@ -1,12 +1,12 @@
 export type TipoChallenge = {
-  $id: number;
+  $id: string;
   nome: string;
   descricao: string;
   nota: number;
 };
 
 export type TipoCheckpoint = {
-  $id: number;
+  $id: string;
   nome: string;
   data: Date;
   feedback: string;
@@ -14,7 +14,7 @@ export type TipoCheckpoint = {
 };
 
 export type TipoGs = {
-  $id: number;
+  $id: string;
   nome: string;
   descricao: string;
   nota: number;
