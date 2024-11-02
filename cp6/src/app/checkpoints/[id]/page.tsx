@@ -1,41 +1,48 @@
 "use client";
-import { TipoGs } from "@/types";
+import { TipoCheckpoint } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Input from "~/components/Input/Input";
 
 export default function GlobalSolution({ params }: { params: { id: number } }) {
   const navigate = useRouter();
-
-  const [gs, setGs] = useState<TipoGs>({
+  const [checkpoint, setCheckpoint] = useState<TipoCheckpoint>({
     $id: 0,
     nome: "",
-    descricao: "",
+    feedback: "",
+    data: new Date(),
     nota: 0,
-    link: "",
   });
 
   useEffect(() => {
-    const chamadaApi = async (id: number) => {
-      try {
-        const response = await fetch(`/api/base-gs/${id}`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar gs");
+    const unwrapParams = async () => {
+      const unwrappedParams = await params;
+      const chamadaApi = async (id: number) => {
+        try {
+          const response = await fetch(`/api/base-checkpoints/${id}`);
+          if (!response.ok) {
+            throw new Error("Erro ao buscar checkpoint");
+          }
+          const dados = await response.json();
+          setCheckpoint({
+            ...dados,
+            data: new Date(dados.data),
+          });
+        } catch (error) {
+          console.error("Erro ao buscar dados do checkpoint", error);
         }
-        const dados = await response.json();
-        setGs(dados);
-      } catch (error) {
-        console.error("Erro ao buscar dados do gs", error);
-      }
+      };
+
+      chamadaApi(unwrappedParams.id);
     };
 
-    chamadaApi(params.id);
+    unwrapParams();
   }, [params]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setGs((prevGs) => ({
-      ...prevGs,
+    setCheckpoint((prevCheckpoint) => ({
+      ...prevCheckpoint,
       [name]: name === "nota" ? parseFloat(value) : value,
     }));
   };
@@ -43,28 +50,28 @@ export default function GlobalSolution({ params }: { params: { id: number } }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/base-gs/${gs.$id}`, {
+      const response = await fetch(`/api/base-checkpoints/${checkpoint.$id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(gs),
+        body: JSON.stringify(checkpoint),
       });
 
       if (response.ok) {
-        alert("Gs atualizado com sucesso!");
-        setGs({
+        alert("Checkpoint atualizado com sucesso!");
+        setCheckpoint({
           $id: 0,
           nome: "",
-          descricao: "",
+          feedback: "",
+          data: new Date(),
           nota: 0,
-          link: "",
         });
 
-        navigate.push("/gs");
+        navigate.push("/checkpoints");
       }
     } catch (error) {
-      console.error("Ocorreu um erro na atualização do gs.", error);
+      console.error("Ocorreu um erro na atualização do checkpoint.", error);
     }
   };
 
@@ -72,10 +79,10 @@ export default function GlobalSolution({ params }: { params: { id: number } }) {
     <div className="flex w-full justify-around">
       <div className="h-100 flex flex-col justify-around text-center">
         <h1 className="text-2xl">PREVIEW</h1>
-        <h1>Nome: {gs.nome}</h1>
-        <p>Descrição: {gs.descricao}</p>
-        <p>Nota: {gs.nota}</p>
-        <p>Link: {gs.link}</p>
+        <h1>Nome: {checkpoint.nome}</h1>
+        <p>Feedback: {checkpoint.feedback}</p>
+        <p>Data: {checkpoint.data.toLocaleDateString()}</p>
+        <p>Nota: {checkpoint.nota}</p>
       </div>
       <div>
         <form onSubmit={handleSubmit} className="flex flex-col items-center">
@@ -85,16 +92,16 @@ export default function GlobalSolution({ params }: { params: { id: number } }) {
             name="nome"
             id="nome"
             className="bg-white rounded-sm text-black"
-            value={gs.nome}
+            value={checkpoint.nome}
             onChange={(e) => handleChange(e)}
           />
           <Input
-            label="descricao"
+            label="feedback"
             type="text"
-            name="descricao"
-            id="descricao"
+            name="feedback"
+            id="feedback"
             className="bg-white rounded-sm text-black"
-            value={gs.descricao}
+            value={checkpoint.feedback}
             onChange={(e) => handleChange(e)}
           />
           <Input
@@ -103,16 +110,16 @@ export default function GlobalSolution({ params }: { params: { id: number } }) {
             name="nota"
             id="nota"
             className="bg-white rounded-sm text-black"
-            value={gs.nota}
+            value={checkpoint.nota}
             onChange={(e) => handleChange(e)}
           />
           <Input
-            label="link"
-            type="text"
-            name="link"
-            id="link"
+            label="data"
+            type="date"
+            name="data"
+            id="data"
             className="bg-white rounded-sm text-black"
-            value={gs.link}
+            value={checkpoint.data.toISOString().split("T")[0]}
             onChange={(e) => handleChange(e)}
           />
           <button

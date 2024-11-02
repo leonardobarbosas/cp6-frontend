@@ -1,37 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { TipoGs } from "@/types";
+import { TipoCheckpoint } from "@/types";
 import { useRouter } from "next/navigation";
 import Input from "~/components/Input/Input";
 
-export default function CadGs() {
+export default function CadCheckpoints() {
   const navigate = useRouter();
 
-  const [gs, setGs] = useState<TipoGs>({
+  const [checkpoint, setCheckpoint] = useState<TipoCheckpoint>({
     $id: 0,
     nome: "",
-    descricao: "",
+    feedback: "",
+    data: new Date(),
     nota: 0,
-    link: "",
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/base-gs/", {
+      const response = await fetch("/api/base-checkpoints/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(gs),
+        body: JSON.stringify(checkpoint),
       });
 
       if (response.ok) {
-        alert("Produto cadastrado com sucesso!");
-        setGs({ $id: 0, nome: "", descricao: "", nota: 0, link: "" });
+        alert("Checkpoint cadastrado com sucesso!");
+        setCheckpoint({
+          $id: 0,
+          nome: "",
+          feedback: "",
+          data: new Date(),
+          nota: 0,
+        });
 
-        navigate.push("/gs");
+        navigate.push("/checkpoints");
       }
     } catch (error) {
       console.error("Ocorreu um erro no cadastro", error);
@@ -39,7 +45,7 @@ export default function CadGs() {
   };
 
   return (
-    <div className="gs-container flex flex-col h-80vh justify-center items-center">
+    <div className="checkpoint-container flex flex-col h-80vh justify-center items-center">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center w-1/2"
@@ -49,32 +55,44 @@ export default function CadGs() {
           type="text"
           id="nome"
           className="bg-white rounded-sm text-black"
-          value={gs.nome}
-          onChange={(e) => setGs({ ...gs, nome: e.target.value })}
+          value={checkpoint.nome}
+          onChange={(e) =>
+            setCheckpoint({ ...checkpoint, nome: e.target.value })
+          }
         />
         <Input
           label="Descrição"
           type="text"
           id="descricao"
           className="bg-white rounded-sm text-black"
-          value={gs.descricao}
-          onChange={(e) => setGs({ ...gs, descricao: e.target.value })}
+          value={checkpoint.feedback}
+          onChange={(e) =>
+            setCheckpoint({ ...checkpoint, feedback: e.target.value })
+          }
         />
         <Input
           label="Nota"
           type="number"
           id="nota"
           className="bg-white rounded-sm text-black"
-          value={gs.nota}
-          onChange={(e) => setGs({ ...gs, nota: parseFloat(e.target.value) })}
+          value={checkpoint.nota}
+          onChange={(e) =>
+            setCheckpoint({ ...checkpoint, nota: parseFloat(e.target.value) })
+          }
         />
         <Input
-          label="Link"
-          type="text"
-          id="link"
+          label="Data"
+          type="date"
+          id="data"
           className="bg-white rounded-sm text-black"
-          value={gs.link}
-          onChange={(e) => setGs({ ...gs, link: e.target.value })}
+          value={
+            checkpoint.data
+              ? new Date(checkpoint.data).toISOString().split("T")[0]
+              : ""
+          }
+          onChange={(e) =>
+            setCheckpoint({ ...checkpoint, data: new Date(e.target.value) })
+          }
         />
         <button
           type="submit"
