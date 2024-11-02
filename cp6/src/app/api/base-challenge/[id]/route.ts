@@ -1,12 +1,12 @@
 import { TipoChallenge } from "@/types";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/lib/appwrite_client";
 import { Databases } from "appwrite";
 
 const database = new Databases(client);
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -26,16 +26,15 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { nome, descricao, nota } =
-      await request.json();
+    const { nome, descricao, nota } = await request.json();
     const challenge = {
       nome,
       descricao,
-      nota
+      nota,
     } as TipoChallenge;
 
     await database.updateDocument(
@@ -56,7 +55,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
