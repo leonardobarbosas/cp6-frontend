@@ -5,6 +5,10 @@ import { Databases, ID, Query } from "appwrite";
 
 const database = new Databases(client);
 
+interface AppwriteError extends Error {
+  message: string;
+}
+
 export async function GET() {
   try {
     const response = await database.listDocuments(
@@ -13,10 +17,11 @@ export async function GET() {
       [Query.orderAsc("$createdAt")]
     );
     return NextResponse.json(response.documents);
-  } catch (error: any) {
-    console.error("Falha na obtenção dos dados: ", error.message);
+  } catch (error) {
+    const appwriteError = error as AppwriteError;
+    console.error("Falha na obtenção dos dados: ", appwriteError.message);
     return NextResponse.json(
-      { message: "Falha na obtenção dos dados: " + error.message },
+      { message: "Falha na obtenção dos dados: " + appwriteError.message },
       { status: 500 }
     );
   }
