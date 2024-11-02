@@ -42,7 +42,7 @@ export default function Gs() {
             className="flex flex-col items-center justify-around h-full bg-back rounded-lg shadow-lg w-96"
           >
             <h2>Nome: {gs.nome}</h2>
-            <p>Descrição: {gs.descricao}</p>
+            <p className="text-center">Descrição: {gs.descricao}</p>
             <p>Nota: {gs.nota}</p>
 
             <Link
