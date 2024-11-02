@@ -34,7 +34,7 @@ export default function Challenge() {
 
   return (
     <div className="challenge-container flex flex-col h-80vh justify-around items-center">
-      <h1 className="text-xl">CHALLENGE SPRINTS</h1>
+      <h1 className="text-5xl">Challenge Sprints</h1>
       <div className="challenge-list  w-full h-1/2 flex items-center justify-center gap-4">
         {challenges.map((challenge) => (
           <div
