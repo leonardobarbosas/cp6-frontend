@@ -20,3 +20,4 @@ export type TipoGs = {
   nota: number;
   link: string;
 };
+

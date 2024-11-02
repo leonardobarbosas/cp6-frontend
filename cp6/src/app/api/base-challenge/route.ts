@@ -21,3 +21,29 @@ export async function GET() {
     );
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const { nome, descricao, nota } = await request.json();
+    const challenge = {
+      nome,
+      descricao,
+      nota,
+    } as TipoChallenge;
+
+    const response = await database.createDocument(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+      process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
+      ID.unique(),
+      challenge
+    );
+
+    return NextResponse.json(response, { status: 201 });
+  } catch (error) {
+    console.error("Falha na criação dos dados : ", error);
+    return NextResponse.json(
+      { message: "Falha na criação dos dados: " + error },
+      { status: 500 }
+    );
+  }
+}
