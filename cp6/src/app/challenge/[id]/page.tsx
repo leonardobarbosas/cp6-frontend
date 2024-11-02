@@ -15,11 +15,6 @@ export default function Desafio({ params }: { params: { id: number } }) {
   });
 
   useEffect(() => {
-    const unwrapParams = async () => {
-      const unwrappedParams = await params;
-      chamadaApi(unwrappedParams.id);
-    };
-
     const chamadaApi = async (id: number) => {
       try {
         const response = await fetch(`/api/base-challenge/${id}`);
@@ -33,12 +28,15 @@ export default function Desafio({ params }: { params: { id: number } }) {
       }
     };
 
-    unwrapParams();
+    chamadaApi(params.id);
   }, [params]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setChallenge({ ...challenge, [name]: value });
+    setChallenge((prevChallenge) => ({
+      ...prevChallenge,
+      [name]: name === "nota" ? parseFloat(value) : value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,42 +67,50 @@ export default function Desafio({ params }: { params: { id: number } }) {
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center w-1/2"
-      >
-        <Input
-          label="Nome"
-          type="text"
-          id="nome"
-          className="bg-white rounded-sm text-black"
-          value={challenge.nome}
-          onChange={(e) => handleChange(e)}
-        />
-        <Input
-          label="Descrição"
-          type="text"
-          id="descricao"
-          className="bg-white rounded-sm text-black"
-          value={challenge.descricao}
-          onChange={(e) => handleChange(e)}
-        />
-        <Input
-          label="Nota"
-          type="number"
-          id="nota"
-          className="bg-white rounded-sm text-black"
-          value={challenge.nota}
-          onChange={(e) => handleChange(e)}
-        />
-        <button
-          type="submit"
-          className="bg-back text-white rounded-lg p-2 mt-2 hover:bg-primary-dark transition-colors hover:bg-blue-600 "
-        >
-          Cadastrar
-        </button>
-      </form>
+    <div className="flex w-full justify-around">
+      <div className="h-100 flex flex-col justify-around text-center">
+        <h1 className="text-2xl">PREVIEW</h1>
+        <h1>Nome: {challenge.nome}</h1>
+        <p>Descrição: {challenge.descricao}</p>
+        <p>Nota: {challenge.nota}</p>
+      </div>
+      <div>
+        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+          <Input
+            label="nome"
+            type="text"
+            name="nome"
+            id="nome"
+            className="bg-white rounded-sm text-black"
+            value={challenge.nome}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input
+            label="descricao"
+            type="text"
+            name="descricao"
+            id="descricao"
+            className="bg-white rounded-sm text-black"
+            value={challenge.descricao}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input
+            label="nota"
+            type="number"
+            name="nota"
+            id="nota"
+            className="bg-white rounded-sm text-black"
+            value={challenge.nota}
+            onChange={(e) => handleChange(e)}
+          />
+          <button
+            type="submit"
+            className="bg-back text-white rounded-lg p-2 mt-2 hover:bg-primary-dark transition-colors hover:bg-blue-600 "
+          >
+            Atualizar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
