@@ -1,21 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
 import { TipoChallenge } from "@/types";
+import { NextResponse } from "next/server";
 import { client } from "@/lib/appwrite_client";
 import { Databases } from "appwrite";
 
 const database = new Databases(client);
 
-interface Context {
-  params: { id: string };
-}
-
-export async function GET(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const response = await database.getDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      id
+      params.id
     );
     return NextResponse.json(response);
   } catch (error) {
@@ -27,20 +25,23 @@ export async function GET(request: NextRequest, context: Context) {
   }
 }
 
-export async function PUT(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const { nome, descricao, nota } = await request.json();
+    const { nome, descricao, nota } =
+      await request.json();
     const challenge = {
       nome,
       descricao,
-      nota,
+      nota
     } as TipoChallenge;
 
     await database.updateDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      id,
+      params.id,
       challenge
     );
 
@@ -54,13 +55,15 @@ export async function PUT(request: NextRequest, context: Context) {
   }
 }
 
-export async function DELETE(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     await database.deleteDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
-      id
+      params.id
     );
 
     return NextResponse.json({ status: 204 });
