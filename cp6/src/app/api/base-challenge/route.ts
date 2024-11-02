@@ -9,8 +9,8 @@ export async function GET() {
   try {
     const response = await database.listDocuments(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
-      process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_GLOBAL_SOLUTION_ID as string,
-      [Query.orderAsc("$createdAt")] // Certifique-se de que o campo "id" está correto
+      process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_CHALLENGE_ID as string,
+      [Query.orderAsc("$createdAt")]
     );
     return NextResponse.json(response.documents);
   } catch (error: any) {
